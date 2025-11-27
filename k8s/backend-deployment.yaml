@@ -1,0 +1,93 @@
+# apiVersion: apps/v1
+# kind: Deployment
+# metadata:
+#   name: backend
+# spec:
+#   replicas: 1
+#   selector:
+#     matchLabels:
+#       app: backend
+#   template:
+#     metadata:
+#       labels:
+#         app: backend
+#     spec:
+#       containers:
+#         - name: backend
+#           image: kingkin69/backend:latest
+#           ports:
+#             - containerPort: 8081
+#           env:
+#             - name: SPRING_DATASOURCE_URL
+#               value: jdbc:mysql://mysql:3306/carapp?useSSL=false&allowPublicKeyRetrieval=true&serverTimezone=UTC
+#             - name: SPRING_DATASOURCE_USERNAME
+#               valueFrom:
+#                 secretKeyRef:
+#                   name: mysql-secret
+#                   key: username
+#             - name: SPRING_DATASOURCE_PASSWORD
+#               valueFrom:
+#                 secretKeyRef:
+#                   name: mysql-secret
+#                   key: password
+#             - name: SERVER_ADDRESS
+#               value: "0.0.0.0"
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: backend
+  labels:
+    app: backend
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: backend
+  template:
+    metadata:
+      labels:
+        app: backend
+    spec:
+      containers:
+        - name: backend
+          image: kingkin69/backend:latest   # GitHub Actions will update this tag
+          imagePullPolicy: Always
+
+          ports:
+            - containerPort: 8081
+
+          env:
+            - name: SPRING_DATASOURCE_URL
+              value: jdbc:mysql://mysql:3306/carapp?useSSL=false&allowPublicKeyRetrieval=true&serverTimezone=UTC
+
+            - name: SPRING_DATASOURCE_USERNAME
+              valueFrom:
+                secretKeyRef:
+                  name: mysql-secret
+                  key: username
+
+            - name: SPRING_DATASOURCE_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: mysql-secret
+                  key: password
+
+            - name: SERVER_ADDRESS
+              value: "0.0.0.0"
+
+          # HEALTH CHECKS (Recommended)
+          readinessProbe:
+            httpGet:
+              path: /actuator/health
+              port: 8081
+            initialDelaySeconds: 15
+            timeoutSeconds: 3
+            periodSeconds: 10
+
+          livenessProbe:
+            httpGet:
+              path: /actuator/health
+              port: 8081
+            initialDelaySeconds: 30
+            timeoutSeconds: 3
+            periodSeconds: 20

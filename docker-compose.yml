@@ -1,0 +1,72 @@
+# version: '3.8'
+# services:
+#   mysql:
+#     image: mysql:8
+#     environment:
+#       MYSQL_ROOT_PASSWORD: root
+#       MYSQL_DATABASE: your_db
+#     ports:
+#       - "3306:3306"
+#     volumes:
+#       - db_data:/var/lib/mysql
+
+#   backend:
+#     build: ./backend
+#     ports:
+#       - "8080:8081"
+#     environment:
+#       SPRING_DATASOURCE_URL: jdbc:mysql://mysql:3306/car_rental
+#       SPRING_DATASOURCE_USERNAME: root
+#       SPRING_DATASOURCE_PASSWORD: root
+#     depends_on:
+#       - mysql
+
+#   frontend:
+#     build: ./frontend
+#     ports:
+#       - "3000:3000"
+#     environment:
+#       REACT_APP_API_URL: http://localhost:8080
+#     depends_on:
+#       - backend
+
+# volumes:
+#   db_data:
+
+version: '3.8'
+
+services:
+  db:
+    image: mysql:8
+    environment:
+      MYSQL_ROOT_PASSWORD: root          # ✅ only this for root
+      MYSQL_DATABASE: car_rental         # ✅ Spring Boot DB
+    ports:
+      - "3306:3306"
+    volumes:
+      - db_data:/var/lib/mysql
+
+  backend:
+    build: ./backend
+    ports:
+      - "8081:8081"
+    environment:
+      SPRING_DATASOURCE_URL: jdbc:mysql://db:3306/car_rental?useSSL=false&allowPublicKeyRetrieval=true
+      SPRING_DATASOURCE_USERNAME: root
+      SPRING_DATASOURCE_PASSWORD: root
+      SPRING_JPA_HIBERNATE_DDL_AUTO: update
+      SERVER_PORT: 8081
+    depends_on:
+      - db
+
+  frontend:
+    build: ./frontend
+    ports:
+      - "3000:3000"
+    environment:
+      VITE_API_URL: http://backend:8081
+    depends_on:
+      - backend
+
+volumes:
+  db_data:

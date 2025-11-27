@@ -1,0 +1,29 @@
+{
+  "version": "0.2.0",
+  "configurations": [
+    {
+      "type": "java",
+      "name": "Spring Boot Backend",
+      "request": "launch",
+      "mainClass": "com.example.demo.DemoApplication",
+      "projectName": "demo"
+    },
+    {
+      "type": "pwa-node",
+      "request": "launch",
+      "name": "React Frontend",
+      "cwd": "${workspaceFolder}/frontend",
+"runtimeExecutable": "C:\\Program Files\\nodejs\\npm.cmd",
+      "runtimeArgs": ["run", "dev"],
+      "port": 5173,
+      "console": "integratedTerminal"
+    }
+  ],
+  "compounds": [
+    {
+      "name": "Run Full Stack",
+      "configurations": ["Spring Boot Backend", "React Frontend"],
+      "stopAll": true
+    }
+  ]
+}
