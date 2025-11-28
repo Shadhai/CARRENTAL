@@ -6,7 +6,6 @@ on:
   pull_request:
 
 jobs:
-
   # -------------------- BACKEND BUILD --------------------
   backend-build:
     runs-on: ubuntu-latest
@@ -37,8 +36,7 @@ jobs:
 
       - name: Build Backend Docker Image (Buildx)
         run: |
-          docker buildx build \
-            --platform linux/amd64 \
+          docker buildx build --platform linux/amd64 \
             -t ${{ secrets.DOCKER_USERNAME }}/backend:latest \
             -f backend/Dockerfile \
             backend \
@@ -78,8 +76,7 @@ jobs:
 
       - name: Build Frontend Docker Image (Buildx)
         run: |
-          docker buildx build \
-            --platform linux/amd64 \
+          docker buildx build --platform linux/amd64 \
             -t ${{ secrets.DOCKER_USERNAME }}/frontend:latest \
             -f frontend/Dockerfile \
             frontend \
